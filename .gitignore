@@ -10,6 +10,8 @@
 
 # production
 /build
+/excel_client
+/excel_client.zip
 
 # misc
 .DS_Store
