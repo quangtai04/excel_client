@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 const App: React.FC = () => {
   const ref_folder = useRef<HTMLInputElement>(null);
+  const ref_hk = useRef<HTMLSelectElement>(null);
   const folder_data =
     "https://drive.google.com/drive/u/0/folders/1UY4teQPgoBVIO_jTph36u9EpuCqwqpPq";
 
@@ -13,7 +14,8 @@ const App: React.FC = () => {
       return;
     }
     const folderId = ref_folder.current.value;
-    const data = { folderId };
+    const isHK2 = ref_hk.current?.value === "hk_2";
+    const data = { folderId, isHK2 };
     excelService
       .createExcelVnedu(data)
       .then((res) => {
@@ -89,6 +91,28 @@ const App: React.FC = () => {
               aria-describedby="inputGroup-sizing-default"
               ref={ref_folder}
             />
+          </div>
+        </div>
+        <div className="row w-100">
+          {/* dropdown */}
+          <div className="input-group mb-3">
+            <span
+              className="input-group-text"
+              id="inputGroup-sizing-default"
+              style={{ width: "20rem" }}
+            >
+              Học kì
+            </span>
+            <select
+              className="form-select"
+              aria-label="Default select example"
+              ref={ref_hk}
+            >
+              <option value="hk_1" selected>
+                Học kì 1
+              </option>
+              <option value="hk_2">Học kì 2</option>
+            </select>
           </div>
         </div>
         <div className="row w-100 d-flex flex-row bd-highlight mb-3">

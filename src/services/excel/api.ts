@@ -7,7 +7,7 @@ export const excelService = {
   renderFileData,
 };
 
-function createExcelVnedu(data: { folderId: string }) {
+function createExcelVnedu(data: { folderId: string; isHK2?: boolean }) {
   return API.post(`${URL_PREFIX}/createExcelVnedu`, data);
 }
 function renderFileData(data: { folderId: string }) {
