@@ -3,7 +3,8 @@ const dev = {
 };
 
 const prod = {
-  API_URL: "https://excel_server.taipq.com",
+  // API_URL: "https://excel_server.taipq.com",
+  API_URL: "https://222.252.109.160",
 };
 
 const config = process.env.NODE_ENV === "production" ? prod : dev;
