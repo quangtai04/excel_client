@@ -14,4 +14,4 @@ mv build excel_client
 7z u excel_client.zip excel_client
 
 #copy to server
-scp excel_client.zip root@192.168.1.15:/root/webapps
+scp excel_client.zip root@222.252.109.160:/root/webapps
