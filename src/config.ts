@@ -3,7 +3,7 @@ const dev = {
 };
 
 const prod = {
-  API_URL: "https://excel_server.taipq.com",
+  API_URL: "https://excelserver.taipq.com",
   // API_URL: "https://222.252.109.160",
 };
 
