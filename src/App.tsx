@@ -1,6 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { excelService } from "./services/excel/api";
 import { toast } from "react-toastify";
+import { generateId } from "./utils/help";
+
+enum Process {
+  CREATE_EXCEL = "CREATE_EXCEL",
+  CREATE_FILE_DATA = "CREATE_FILE_DATA",
+}
 
 const App: React.FC = () => {
   const ref_folder = useRef<HTMLInputElement>(null);
@@ -8,18 +14,42 @@ const App: React.FC = () => {
   const folder_data =
     "https://drive.google.com/drive/u/0/folders/1UY4teQPgoBVIO_jTph36u9EpuCqwqpPq";
 
+  const [currentProgress, setCurrentProgress] = useState<
+    Map<
+      string,
+      {
+        type: Process;
+        status: "PENDING" | "SUCCESS" | "ERROR";
+        time: Date;
+      }
+    >
+  >(new Map());
+
   const handleConvert = () => {
     if (!ref_folder.current?.value) {
       alert("Vui lòng nhập đầy đủ thông tin");
       return;
     }
+    const key = generateId();
+    currentProgress.set(key, {
+      type: Process.CREATE_EXCEL,
+      status: "PENDING",
+      time: new Date(),
+    });
+    setCurrentProgress(new Map(currentProgress));
     const folderId = ref_folder.current.value;
     const isHK2 = ref_hk.current?.value === "hk_2";
     const data = { folderId, isHK2 };
     excelService
       .createExcelVnedu(data)
       .then((res) => {
-        toast.success("Convert thành công");
+        toast.success("Tạo file thành công");
+        currentProgress.set(key, {
+          type: Process.CREATE_EXCEL,
+          status: "SUCCESS",
+          time: new Date(),
+        });
+        setCurrentProgress(new Map(currentProgress));
       })
       .catch((err) => {
         toast.error("Có lỗi xảy ra");
@@ -31,12 +61,25 @@ const App: React.FC = () => {
       alert("Vui lòng nhập đầy đủ thông tin");
       return;
     }
+    const key = generateId();
+    currentProgress.set(key, {
+      type: Process.CREATE_FILE_DATA,
+      status: "PENDING",
+      time: new Date(),
+    });
+    setCurrentProgress(new Map(currentProgress));
     const folderId = ref_folder.current.value;
     const data = { folderId };
     excelService
       .renderFileData(data)
       .then((res) => {
         toast.success("Tạo file data thành công");
+        currentProgress.set(key, {
+          type: Process.CREATE_FILE_DATA,
+          status: "SUCCESS",
+          time: new Date(),
+        });
+        setCurrentProgress(new Map(currentProgress));
       })
       .catch((err) => {
         toast.error("Có lỗi xảy ra");
@@ -134,6 +177,57 @@ const App: React.FC = () => {
               Create file data
             </button>
           </div>
+        </div>
+        <div className="row w-100">
+          {/* create table boostrap */}
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Time</th>
+                <th scope="col">Process</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from(currentProgress)
+                .reverse()
+                .map(([key, value], index) => (
+                  <tr key={key}>
+                    <th scope="row">{index + 1}</th>
+                    <td>{value.time.toLocaleString()}</td>
+                    <td>
+                      {(() => {
+                        switch (value.type) {
+                          case Process.CREATE_EXCEL:
+                            return "Create excel VNEDU";
+                          case Process.CREATE_FILE_DATA:
+                            return "Create file data";
+                        }
+                      })()}
+                    </td>
+                    <td>
+                      {(() => {
+                        switch (value.status) {
+                          case "PENDING":
+                            return (
+                              <span className="badge bg-warning">PENDING</span>
+                            );
+                          case "SUCCESS":
+                            return (
+                              <span className="badge bg-success">SUCCESS</span>
+                            );
+                          case "ERROR":
+                            return (
+                              <span className="badge bg-danger">ERROR</span>
+                            );
+                        }
+                      })()}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
