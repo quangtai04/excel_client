@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { excelService } from "./services/excel/api";
 import { toast } from "react-toastify";
 import { generateId } from "./utils/help";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 enum Process {
   CREATE_EXCEL = "CREATE_EXCEL",
@@ -27,7 +29,7 @@ const App: React.FC = () => {
 
   const handleConvert = () => {
     if (!ref_folder.current?.value) {
-      alert("Vui lòng nhập đầy đủ thông tin");
+      toast.warning("Vui lòng nhập đầy đủ thông tin");
       return;
     }
     const key = generateId();
@@ -58,7 +60,7 @@ const App: React.FC = () => {
 
   const handleFileData = () => {
     if (!ref_folder.current?.value) {
-      alert("Vui lòng nhập đầy đủ thông tin");
+      toast.warning("Vui lòng nhập đầy đủ thông tin");
       return;
     }
     const key = generateId();
@@ -230,6 +232,7 @@ const App: React.FC = () => {
           </table>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
